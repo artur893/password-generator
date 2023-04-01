@@ -4,7 +4,6 @@ import "./PasswordGeneratorComponent.scss";
 export const PasswordGenerator: React.FC = () => {
     const [password, setPassword] = useState<string>()
 
-
     const [passLength, setPassLength] = useState(6)
     const [useLowerLetters, setLowerLetters] = useState(false)
     const [useUpperLetters, setUpperLetters] = useState(true)
@@ -38,13 +37,22 @@ export const PasswordGenerator: React.FC = () => {
         for (let i = 1; i <= passLength; i++) {
             password.push(getRandomOne(getRandomOne(availableSigns)))
         }
-
         setPassword(password.join(''))
     }
 
     useEffect(() => {
         generatePassword()
-    }, [passLength])
+    }, [passLength, useLowerLetters, useUpperLetters, useNumbers, useSymbols])
+
+    function allowUncheck(currentCheckbox: boolean) {
+        let checkedBoxes = 0
+        if (useLowerLetters) { checkedBoxes += 1 }
+        if (useUpperLetters) { checkedBoxes += 1 }
+        if (useNumbers) { checkedBoxes += 1 }
+        if (useSymbols) { checkedBoxes += 1 }
+        if (checkedBoxes === 1 && currentCheckbox === true) return false
+        else return true
+    }
 
     return (
         <div className="password-generator">
@@ -55,16 +63,32 @@ export const PasswordGenerator: React.FC = () => {
                     <input type="range" min="4" max="16" step="1" value={passLength} onChange={(event: any) => setPassLength(event.target.value)} />
                 </div>
                 <div className="password-generator__input-container">
-                    <label><input type="checkbox" checked={useUpperLetters} onChange={() => setUpperLetters(!useUpperLetters)} />Include Uppercase Letter</label>
+                    <label><input type="checkbox" checked={useUpperLetters} onChange={() => {
+                        if (allowUncheck(useUpperLetters)) {
+                            setUpperLetters(!useUpperLetters)
+                        }
+                    }} />Include Uppercase Letter</label>
                 </div>
                 <div className="password-generator__input-container">
-                    <label><input type="checkbox" checked={useLowerLetters} onChange={() => setLowerLetters(!useLowerLetters)} />Include Lowercase Letter</label>
+                    <label><input type="checkbox" checked={useLowerLetters} onChange={() => {
+                        if (allowUncheck(useLowerLetters)) {
+                            setLowerLetters(!useLowerLetters)
+                        }
+                    }} />Include Lowercase Letter</label>
                 </div>
                 <div className="password-generator__input-container">
-                    <label><input type="checkbox" checked={useNumbers} onChange={() => setNumbers(!useNumbers)} />Include Numbers</label>
+                    <label><input type="checkbox" checked={useNumbers} onChange={() => {
+                        if (allowUncheck(useNumbers)) {
+                            setNumbers(!useNumbers)
+                        }
+                    }} />Include Numbers</label>
                 </div>
                 <div className="password-generator__input-container">
-                    <label><input type="checkbox" checked={useSymbols} onChange={() => setSymbols(!useSymbols)} />Include Symbols</label>
+                    <label><input type="checkbox" checked={useSymbols} onChange={() => {
+                        if (allowUncheck(useSymbols)) {
+                            setSymbols(!useSymbols)
+                        }
+                    }} />Include Symbols</label>
                 </div>
             </form>
             <div className="password-generator__strength">TU BEDZIE SIŁA HASŁA</div>
