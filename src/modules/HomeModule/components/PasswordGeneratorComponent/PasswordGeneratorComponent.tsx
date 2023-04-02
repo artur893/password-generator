@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import refreshIcon from '../../../../assets/images/refreshIcon.svg'
+import copyIcon from '../../../../assets/images/copy.svg'
 import "./PasswordGeneratorComponent.scss";
 
 export const PasswordGenerator: React.FC = () => {
-    const [password, setPassword] = useState<string>()
+    const [password, setPassword] = useState<string>('password')
 
     const [passLength, setPassLength] = useState(6)
     const [useLowerLetters, setLowerLetters] = useState(false)
@@ -59,8 +61,9 @@ export const PasswordGenerator: React.FC = () => {
             <h1 className="password-generator__title">Password Generator</h1>
             <form className="password-generator__form">
                 <div className="password-generator__input-container">
-                    <div className="password-generator__range-label"><label>Character Length</label><span>{passLength}</span></div>
-                    <input type="range" min="4" max="16" step="1" value={passLength} onChange={(event: any) => setPassLength(event.target.value)} />
+                    <div className="password-generator__range-label"><label>Character Length</label><span className="password-generator__range-number">{passLength}</span></div>
+                    <input type="range" min="4" max="16" step="1" value={passLength}
+                        onChange={(event: any) => setPassLength(event.target.value)} className="password-generator__range-input"></input>
                 </div>
                 <div className="password-generator__input-container">
                     <label><input type="checkbox" checked={useUpperLetters} onChange={() => {
@@ -91,9 +94,23 @@ export const PasswordGenerator: React.FC = () => {
                     }} />Include Symbols</label>
                 </div>
             </form>
-            <div className="password-generator__strength">TU BEDZIE SIŁA HASŁA</div>
-            <div className="password-generator__password">{password} <button onClick={generatePassword}>GENERATE</button></div>
-            <button className="password-generator__copy-button">Copy Password</button>
+            <div className="password-generator__strength-container">
+                <div className="password-generator__strength-title-container">
+                    <h2 className="password-generator__strength-title">Strength</h2>
+                    <span className="password-generator__strength-description">MOCNE HASŁO BYKU!</span>
+                </div>
+                <div className="password-generator__strength-boxes">
+                    <div className="password-generator__strength-box"></div>
+                    <div className="password-generator__strength-box"></div>
+                    <div className="password-generator__strength-box"></div>
+                    <div className="password-generator__strength-box"></div>
+                </div>
+            </div>
+            <div className="password-generator__password">
+                <span className="password-generator__password-text">{password}</span>
+                <button className="password-generator__password-icon" onClick={generatePassword}><img src={refreshIcon} alt="refresh" /></button>
+            </div>
+            <button className="password-generator__copy-button" onClick={() => navigator.clipboard.writeText(password)}> <img src={copyIcon} alt="copy" /> Copy Password</button>
         </div>
     );
 };
