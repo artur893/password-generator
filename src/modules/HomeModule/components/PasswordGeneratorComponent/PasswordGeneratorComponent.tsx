@@ -46,6 +46,10 @@ export const PasswordGenerator: React.FC = () => {
         generatePassword()
     }, [passLength, useLowerLetters, useUpperLetters, useNumbers, useSymbols])
 
+    useEffect(() => {
+        markStrengthBoxes()
+    }, [password])
+
     function allowUncheck(currentCheckbox: boolean) {
         let checkedBoxes = 0
         if (useLowerLetters) { checkedBoxes += 1 }
@@ -54,6 +58,31 @@ export const PasswordGenerator: React.FC = () => {
         if (useSymbols) { checkedBoxes += 1 }
         if (checkedBoxes === 1 && currentCheckbox === true) return false
         else return true
+    }
+
+    function markStrengthBoxes() {
+        const boxes = document.querySelectorAll('.password-generator__strength-box')
+        const text = document.querySelector('.password-generator__strength-description')
+        if (text) {
+            text.textContent = 'Low password strength'
+            boxes.forEach(box => box.classList.remove('low-strength'))
+            boxes.forEach(box => box.classList.remove('medium-strength'))
+            boxes.forEach(box => box.classList.remove('high-strength'))
+            if (password.length >= 10 && useSymbols && useNumbers) {
+                boxes.forEach(box => box.classList.add('high-strength'))
+                text.textContent = 'High password strength'
+            } else if (password.length >= 8 && (useSymbols || useNumbers)) {
+                boxes[0].classList.add('medium-strength')
+                boxes[1].classList.add('medium-strength')
+                boxes[2].classList.add('medium-strength')
+                text.textContent = 'Average password strength'
+            } else if (password.length >= 6) {
+                boxes[0].classList.add('low-strength')
+                boxes[1].classList.add('low-strength')
+            } else if (password.length > 1) {
+                boxes[0].classList.add('low-strength')
+            }
+        }
     }
 
     return (
@@ -97,7 +126,7 @@ export const PasswordGenerator: React.FC = () => {
             <div className="password-generator__strength-container">
                 <div className="password-generator__strength-title-container">
                     <h2 className="password-generator__strength-title">Strength</h2>
-                    <span className="password-generator__strength-description">MOCNE HASŁO BYKU!</span>
+                    <span className="password-generator__strength-description"></span>
                 </div>
                 <div className="password-generator__strength-boxes">
                     <div className="password-generator__strength-box"></div>
